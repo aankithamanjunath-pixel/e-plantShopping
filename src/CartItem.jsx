@@ -1,68 +1,66 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { removeItem, updateQuantity } from './CartSlice';
-import './CartItem.css';
+import { useSelector, useDispatch } from "react-redux";
+import { increaseQuantity, decreaseQuantity, removeItem } from "./CartSlice";
+import { useNavigate } from "react-router-dom";
+import "./CartItem.css";
 
-const CartItem = ({ onContinueShopping }) => {
-  const cart = useSelector(state => state.cart.items);
+const CartItem = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  // Calculate total amount for all products in the cart
-  const calculateTotalAmount = () => {
- 
-  };
-
-  const handleContinueShopping = (e) => {
-   
-  };
-
-
-
-  const handleIncrement = (item) => {
-  };
-
-  const handleDecrement = (item) => {
-   
-  };
-
-  const handleRemove = (item) => {
-  };
-
-  // Calculate total cost based on quantity for an item
-  const calculateTotalCost = (item) => {
-  };
+  const cartItems = useSelector((state) => state.cart.items);
+  const totalAmount = useSelector((state) => state.cart.totalAmount);
 
   return (
     <div className="cart-container">
-      <h2 style={{ color: 'black' }}>Total Cart Amount: ${calculateTotalAmount()}</h2>
-      <div>
-        {cart.map(item => (
-          <div className="cart-item" key={item.name}>
-            <img className="cart-item-image" src={item.image} alt={item.name} />
-            <div className="cart-item-details">
-              <div className="cart-item-name">{item.name}</div>
-              <div className="cart-item-cost">{item.cost}</div>
-              <div className="cart-item-quantity">
-                <button className="cart-item-button cart-item-button-dec" onClick={() => handleDecrement(item)}>-</button>
-                <span className="cart-item-quantity-value">{item.quantity}</span>
-                <button className="cart-item-button cart-item-button-inc" onClick={() => handleIncrement(item)}>+</button>
+      <h2>Shopping Cart</h2>
+
+      {cartItems.length === 0 ? (
+        <p>Your cart is empty.</p>
+      ) : (
+        <>
+          {cartItems.map((item, index) => (
+            <div className="cart-item" key={index}>
+              <img src={item.image} alt={item.name} className="cart-image" />
+
+              <div className="cart-details">
+                <h3>{item.name}</h3>
+                <p>Unit Price: ${item.cost}</p>
+                <p>Total: ${item.totalPrice}</p>
+
+                <div className="quantity-controls">
+                  <button onClick={() => dispatch(decreaseQuantity(item.name))}>
+                    −
+                  </button>
+                  <span>{item.quantity}</span>
+                  <button onClick={() => dispatch(increaseQuantity(item.name))}>
+                    +
+                  </button>
+                </div>
+
+                <button
+                  className="delete-btn"
+                  onClick={() => dispatch(removeItem(item.name))}
+                >
+                  Delete
+                </button>
               </div>
-              <div className="cart-item-total">Total: ${calculateTotalCost(item)}</div>
-              <button className="cart-item-delete" onClick={() => handleRemove(item)}>Delete</button>
             </div>
+          ))}
+
+          <h3>Total Cart Amount: ${totalAmount}</h3>
+
+          <div className="cart-actions">
+            <button onClick={() => navigate("/plants")}>
+              Continue Shopping
+            </button>
+            <button onClick={() => alert("Checkout Coming Soon!")}>
+              Checkout
+            </button>
           </div>
-        ))}
-      </div>
-      <div style={{ marginTop: '20px', color: 'black' }} className='total_cart_amount'></div>
-      <div className="continue_shopping_btn">
-        <button className="get-started-button" onClick={(e) => handleContinueShopping(e)}>Continue Shopping</button>
-        <br />
-        <button className="get-started-button1">Checkout</button>
-      </div>
+        </>
+      )}
     </div>
   );
 };
 
 export default CartItem;
-
-
